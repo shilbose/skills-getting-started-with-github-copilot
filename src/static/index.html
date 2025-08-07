@@ -1,50 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mergington High School Activities</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header>
-      <h1>Mergington High School</h1>
-      <h2>Extracurricular Activities</h2>
-    </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-Gram Finder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-search"></i>
+                <h1>4-Gram Finder</h1>
+            </div>
+            <p class="subtitle">Extract 4-word sequences from any sentence</p>
+        </header>
 
-    <main>
-      <section id="activities-container">
-        <h3>Available Activities</h3>
-        <div id="activities-list">
-          <!-- Activities will be loaded here -->
-          <p>Loading activities...</p>
-        </div>
-      </section>
+        <main class="main-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="sentence-input" class="input-label">
+                        <i class="fas fa-pen"></i>
+                        Enter your sentence
+                    </label>
+                    <textarea 
+                        id="sentence-input" 
+                        class="sentence-input" 
+                        placeholder="Type or paste your sentence here..."
+                        rows="4"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button id="extract-btn" class="extract-btn">
+                            <i class="fas fa-magic"></i>
+                            Extract 4-Grams
+                        </button>
+                        <button id="clear-btn" class="clear-btn">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-      <section id="signup-container">
-        <h3>Sign Up for an Activity</h3>
-        <form id="signup-form">
-          <div class="form-group">
-            <label for="email">Student Email:</label>
-            <input type="email" id="email" required placeholder="your-email@mergington.edu" />
-          </div>
-          <div class="form-group">
-            <label for="activity">Select Activity:</label>
-            <select id="activity" required>
-              <option value="">-- Select an activity --</option>
-              <!-- Activity options will be loaded here -->
-            </select>
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <div id="message" class="hidden"></div>
-      </section>
-    </main>
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2><i class="fas fa-list"></i> Results</h2>
+                    <div class="stats">
+                        <span class="stat-item">
+                            <i class="fas fa-hashtag"></i>
+                            <span id="total-grams">0</span> 4-grams found
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="results-content">
+                    <div class="original-sentence">
+                        <h3><i class="fas fa-quote-left"></i> Original Sentence</h3>
+                        <p id="original-sentence" class="sentence-text"></p>
+                    </div>
+                    
+                    <div class="four-grams-list">
+                        <h3><i class="fas fa-layer-group"></i> 4-Grams</h3>
+                        <div id="four-grams-container" class="grams-container">
+                            <!-- 4-grams will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <footer>
-      <p>&copy; 2023 Mergington High School</p>
-    </footer>
+            <div class="loading-section" id="loading-section" style="display: none;">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Extracting 4-grams...</p>
+                </div>
+            </div>
+
+            <div class="error-section" id="error-section" style="display: none;">
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p id="error-text"></p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 4-Gram Finder. Built with FastAPI & JavaScript.</p>
+        </footer>
+    </div>
 
     <script src="app.js"></script>
-  </body>
+</body>
 </html>

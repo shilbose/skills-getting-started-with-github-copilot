@@ -1,16 +1,59 @@
-# Getting Started with GitHub Copilot
+# 4-Gram Finder
 
-<img src="https://octodex.github.com/images/Professortocat_v2.png" align="right" height="200px" />
+A modern web application that extracts 4-grams (4-word sequences) from input sentences. Built with FastAPI and JavaScript.
 
-Hey **shilbose**!
+## Features
 
-Mona here. I'm done preparing your exercise. Hope you enjoy! 💚
+- **4-Gram Extraction**: Automatically finds all 4-word sequences in any sentence
+- **Modern UI**: Beautiful, responsive design with smooth animations
+- **Real-time Processing**: Instant results with loading states
+- **Error Handling**: Comprehensive error messages and validation
+- **Example Sentences**: Quick testing with pre-loaded examples
+- **Mobile Responsive**: Works perfectly on all device sizes
 
-Remember, it's self-paced so feel fee to take a break! ☕️
+## How to Run
 
-[![](https://img.shields.io/badge/Go%20to%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/shilbose/skills-getting-started-with-github-copilot/issues/1)
+1. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
----
+2. **Start the Server**:
+   ```bash
+   cd src
+   uvicorn app:app --reload --host 0.0.0.0 --port 8000
+   ```
 
-&copy; 2025 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+3. **Open in Browser**:
+   Navigate to `http://localhost:8000`
+
+## API Endpoints
+
+- `GET /` - Main application interface
+- `POST /extract-four-grams` - Extract 4-grams from a sentence
+- `GET /health` - Health check endpoint
+
+## Example Usage
+
+Input: "The quick brown fox jumps over the lazy dog"
+
+Output 4-grams:
+- "the quick brown fox"
+- "quick brown fox jumps"
+- "brown fox jumps over"
+- "fox jumps over the"
+- "jumps over the lazy"
+- "over the lazy dog"
+
+## Technology Stack
+
+- **Backend**: FastAPI (Python)
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Styling**: Custom CSS with modern gradients and animations
+- **Icons**: Font Awesome
+- **Fonts**: Inter (Google Fonts)
+
+## License
+
+MIT License - feel free to use and modify as needed!
 
