@@ -54,6 +54,10 @@ def extract_four_grams(sentence: str) -> list[str]:
 def root():
     return RedirectResponse(url="/static/index.html")
 
+@app.get("/simple")
+def simple_page():
+    return RedirectResponse(url="/static/simple.html")
+
 @app.post("/extract-four-grams", response_model=FourGramResponse)
 def extract_four_grams_endpoint(request: SentenceRequest):
     """

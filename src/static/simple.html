@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple 4-Gram Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .clear-btn {
+            background-color: #6c757d;
+        }
+        
+        .clear-btn:hover {
+            background-color: #545b62;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .results h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .gram-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 3px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>4-Gram Finder</h1>
+        
+        <div class="input-group">
+            <label for="sentence-input">Enter your sentence:</label>
+            <textarea 
+                id="sentence-input" 
+                placeholder="Type or paste your sentence here..."
+            ></textarea>
+        </div>
+        
+        <div class="input-group">
+            <button id="extract-btn">Extract 4-Grams</button>
+            <button id="clear-btn" class="clear-btn">Clear</button>
+        </div>
+        
+        <div id="loading" class="loading hidden">
+            Processing...
+        </div>
+        
+        <div id="error" class="error hidden">
+            <div id="error-text"></div>
+        </div>
+        
+        <div id="results" class="results hidden">
+            <h3>Results</h3>
+            <p><strong>Original sentence:</strong> <span id="original-sentence"></span></p>
+            <p><strong>Total 4-grams found:</strong> <span id="total-count">0</span></p>
+            <h4>4-Grams:</h4>
+            <div id="grams-list"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sentenceInput = document.getElementById('sentence-input');
+            const extractBtn = document.getElementById('extract-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const results = document.getElementById('results');
+            const originalSentence = document.getElementById('original-sentence');
+            const totalCount = document.getElementById('total-count');
+            const gramsList = document.getElementById('grams-list');
+            const errorText = document.getElementById('error-text');
+
+            function showLoading() {
+                loading.classList.remove('hidden');
+                error.classList.add('hidden');
+                results.classList.add('hidden');
+            }
+
+            function hideLoading() {
+                loading.classList.add('hidden');
+            }
+
+            function showError(message) {
+                errorText.textContent = message;
+                error.classList.remove('hidden');
+                results.classList.add('hidden');
+            }
+
+            function hideError() {
+                error.classList.add('hidden');
+            }
+
+            function showResults(data) {
+                originalSentence.textContent = data.sentence;
+                totalCount.textContent = data.total_grams;
+                
+                gramsList.innerHTML = '';
+                data.four_grams.forEach((gram, index) => {
+                    const gramElement = document.createElement('div');
+                    gramElement.className = 'gram-item';
+                    gramElement.textContent = `${index + 1}. ${gram}`;
+                    gramsList.appendChild(gramElement);
+                });
+                
+                results.classList.remove('hidden');
+                error.classList.add('hidden');
+            }
+
+            async function extractFourGrams() {
+                const sentence = sentenceInput.value.trim();
+                
+                if (!sentence) {
+                    showError('Please enter a sentence.');
+                    return;
+                }
+
+                if (sentence.split(' ').length < 4) {
+                    showError('The sentence must contain at least 4 words.');
+                    return;
+                }
+
+                showLoading();
+
+                try {
+                    const response = await fetch('/extract-four-grams', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ sentence: sentence })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Failed to extract 4-grams');
+                    }
+
+                    const data = await response.json();
+                    showResults(data);
+                } catch (error) {
+                    console.error('Error:', error);
+                    showError(error.message || 'An error occurred while extracting 4-grams.');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            function clearAll() {
+                sentenceInput.value = '';
+                results.classList.add('hidden');
+                error.classList.add('hidden');
+                sentenceInput.focus();
+            }
+
+            extractBtn.addEventListener('click', extractFourGrams);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Allow Enter key to trigger extraction
+            sentenceInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    extractFourGrams();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
